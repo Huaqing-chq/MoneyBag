@@ -1,40 +1,130 @@
-// ===============================
-// MoneyBag
-// ===============================
+// 选择元素
+const addBtn = document.getElementById('add-btn');
+const exportBtn = document.getElementById('export-btn');
+const themeBtn = document.getElementById('theme-btn');
+const popup = document.getElementById('popup');
+const saveBtn = document.getElementById('save-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+const amountInput = document.getElementById('amount');
+const reasonInput = document.getElementById('reason');
+const imageInput = document.getElementById('image');
+const previewImg = document.getElementById('preview');
+const recordList = document.getElementById('record-list');
+const balanceDisplay = document.getElementById('balance');
 
-// 初始化数据
-let records = JSON.parse(localStorage.getItem("records")) || [];
-let darkMode = false;
+let records = JSON.parse(localStorage.getItem('records')) || [];
+let balance = parseFloat(localStorage.getItem('balance')) || 0;
 
-// 页面加载后绑定事件
-window.onload = () => {
-  document.getElementById("add-btn").onclick = openPopup;
-  document.getElementById("cancel-btn").onclick = closePopup;
-  document.getElementById("save-btn").onclick = saveRecord;
-  document.getElementById("export-btn").onclick = exportCSV;
-  document.getElementById("theme-btn").onclick = toggleTheme;
-  document.getElementById("image").onchange = previewImage;
+// 初始渲染
+renderRecords();
 
-  renderRecords();
-  updateBalance();
-};
+// 显示弹窗
+addBtn.addEventListener('click', () => {
+  popup.classList.remove('hidden');
+});
 
-// ===============================
-// 打开 / 关闭弹窗
-// ===============================
-function openPopup() {
-  document.getElementById("popup").classList.remove("hidden");
-}
+// 取消按钮关闭弹窗
+cancelBtn.addEventListener('click', () => {
+  popup.classList.add('hidden');
+  clearPopup();
+});
 
-function closePopup() {
-  document.getElementById("popup").classList.add("hidden");
-  clearInputs();
-}
-
-// ===============================
 // 保存记录
-// ===============================
-function saveRecord() {
+saveBtn.addEventListener('click', () => {
+  const amount = parseFloat(amountInput.value);
+  const reason = reasonInput.value.trim();
+
+  if (isNaN(amount) || !reason) {
+    alert('请填写完整信息');
+    return;
+  }
+
+  const reader = new FileReader();
+  const file = imageInput.files[0];
+
+  reader.onloadend = () => {
+    const imageData = file ? reader.result : null;
+    const record = {
+      id: Date.now(),
+      amount,
+      reason,
+      image: imageData,
+      time: new Date().toLocaleString()
+    };
+
+    records.push(record);
+    balance += amount;
+
+    localStorage.setItem('records', JSON.stringify(records));
+    localStorage.setItem('balance', balance);
+
+    renderRecords();
+    clearPopup();
+    popup.classList.add('hidden');
+  };
+
+  if (file) reader.readAsDataURL(file);
+  else reader.onloadend();
+});
+
+// 导出表格
+exportBtn.addEventListener('click', () => {
+  let csv = "金额,事由,时间\n";
+  records.forEach(r => {
+    csv += `${r.amount},${r.reason},${r.time}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'moneybag_records.csv';
+  a.click();
+});
+
+// 主题切换
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+});
+
+// 图片预览
+imageInput.addEventListener('change', () => {
+  const file = imageInput.files[0];
+  if (!file) {
+    previewImg.classList.add('hidden');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewImg.src = e.target.result;
+    previewImg.classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+
+// 渲染记录
+function renderRecords() {
+  recordList.innerHTML = '';
+  balanceDisplay.textContent = `总余额：¥${balance.toFixed(2)}`;
+
+  records.slice().reverse().forEach(r => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <strong>${r.amount > 0 ? '+' : ''}${r.amount}</strong>
+      <p>${r.reason}</p>
+      <span>${r.time}</span>
+      ${r.image ? `<img src="${r.image}" class="thumb" alt="附图">` : ''}
+    `;
+    recordList.appendChild(li);
+  });
+}
+
+// 清空输入框
+function clearPopup() {
+  amountInput.value = '';
+  reasonInput.value = '';
+  imageInput.value = '';
+  previewImg.classList.add('hidden');
+}function saveRecord() {
   const amount = parseFloat(document.getElementById("amount").value);
   const reason = document.getElementById("reason").value.trim();
   const fileInput = document.getElementById("image");
@@ -248,4 +338,5 @@ function clearAll() {
     updateTotal();
   }
                                }updateList();
+
 
