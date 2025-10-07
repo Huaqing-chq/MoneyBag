@@ -165,4 +165,7 @@ img.receipt {
   border-radius: 6px;
   }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+  }
+
