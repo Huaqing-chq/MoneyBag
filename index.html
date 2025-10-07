@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoneyBag - 记账本</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>💰 MoneyBag</h1>
+    <div id="balance">总余额：¥0.00</div>
+  </header>
+
+  <main>
+    <ul id="record-list"></ul>
+  </main>
+
+  <footer>
+    <button id="add-btn">＋ 新记录</button>
+    <button id="export-btn">导出表格</button>
+    <button id="theme-btn">🌙 主题</button>
+  </footer>
+
+  <div id="popup" class="hidden">
+    <div class="popup-box">
+      <h2>添加记录</h2>
+      <input id="amount" type="number" placeholder="金额（正收入 / 负支出）">
+      <input id="reason" type="text" placeholder="事由">
+      <input id="image" type="file" accept="image/*">
+      <img id="preview" class="hidden" alt="预览">
+      <button id="save-btn">保存</button>
+      <button id="cancel-btn">取消</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

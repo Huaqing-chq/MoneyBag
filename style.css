@@ -1,0 +1,107 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+:root {
+  --bg: #f6f8fb;
+  --text: #222;
+  --card: white;
+  --header: #1a3c84;
+}
+
+body.dark {
+  --bg: #1c1c1c;
+  --text: #eee;
+  --card: #2b2b2b;
+  --header: #0e2355;
+}
+
+header {
+  background: var(--header);
+  color: white;
+  text-align: center;
+  padding: 15px 10px;
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+#record-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#record-list li {
+  background: var(--card);
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.record-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background: #eee;
+}
+
+footer button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #1a3c84;
+  color: white;
+  font-size: 1em;
+}
+
+#popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden { display: none; }
+
+.popup-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 350px;
+  text-align: center;
+}
+
+.popup-box input {
+  width: 90%;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
