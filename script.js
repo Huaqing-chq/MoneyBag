@@ -1,40 +1,142 @@
 // ===============================
-// MoneyBag - 本地记账脚本
+// MoneyBag
 // ===============================
 
-// 初始化
+// 初始化数据
 let records = JSON.parse(localStorage.getItem("records")) || [];
+let darkMode = false;
 
-// 页面加载完后刷新记录显示
+// 页面加载后绑定事件
 window.onload = () => {
-  updateTotal();
+  document.getElementById("add-btn").onclick = openPopup;
+  document.getElementById("cancel-btn").onclick = closePopup;
+  document.getElementById("save-btn").onclick = saveRecord;
+  document.getElementById("export-btn").onclick = exportCSV;
+  document.getElementById("theme-btn").onclick = toggleTheme;
+  document.getElementById("image").onchange = previewImage;
+
   renderRecords();
+  updateBalance();
 };
 
 // ===============================
-// 添加记录主逻辑
+// 打开 / 关闭弹窗
 // ===============================
-function showAddRecordDialog() {
-  const overlay = document.createElement('div');
-  overlay.className = 'overlay';
-  document.body.appendChild(overlay);
+function openPopup() {
+  document.getElementById("popup").classList.remove("hidden");
+}
 
-  const dialog = document.createElement('div');
-  dialog.className = 'dialog';
-  dialog.innerHTML = `
-    <h3>添加记录</h3>
-    <input type="number" id="amountInput" placeholder="金额" />
-    <input type="text" id="reasonInput" placeholder="事由" />
-    <input type="file" id="imageInput" accept="image/*" />
-    <div id="preview"></div>
-    <div class="buttons">
-      <button id="cancelBtn">取消</button>
-      <button id="okBtn">确定</button>
-    </div>
-  `;
-  document.body.appendChild(dialog);
+function closePopup() {
+  document.getElementById("popup").classList.add("hidden");
+  clearInputs();
+}
 
-  const fileInput = dialog.querySelector('#imageInput');
+// ===============================
+// 保存记录
+// ===============================
+function saveRecord() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  const reason = document.getElementById("reason").value.trim();
+  const fileInput = document.getElementById("image");
+  const file = fileInput.files[0];
+
+  if (isNaN(amount) || reason === "") {
+    alert("请输入金额和事由！");
+    return;
+  }
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      addRecord(amount, reason, e.target.result);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    addRecord(amount, reason, null);
+  }
+
+  closePopup();
+}
+
+// ===============================
+// 添加记录到本地存储
+// ===============================
+function addRecord(amount, reason, image) {
+  const record = {
+    id: Date.now(),
+    amount,
+    reason,
+    date: new Date().toLocaleString(),
+    image
+  };
+  records.unshift(record);
+  localStorage.setItem("records", JSON.stringify(records));
+  renderRecords();
+  updateBalance();
+}
+
+// ===============================
+// 渲染记录列表
+// ===============================
+function renderRecords() {
+  const list = document.getElementById("record-list");
+  list.innerHTML = "";
+
+  if (records.length === 0) {
+    list.innerHTML = "<li class='empty'>暂无记录</li>";
+    return;
+  }
+
+  records.forEach(r => {
+    const li = document.createElement("li");
+    li.className = "record-item";
+    li.innerHTML = `
+      <div class="left">
+        <div class="amount">¥${r.amount}</div>
+        <div class="reason">${r.reason}</div>
+      </div>
+      <div class="right">
+        <div class="date">${r.date}</div>
+      </div>
+      ${r.image ? `<img src="${r.image}" class="preview-img">` : ""}
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ===============================
+// 更新总余额
+// ===============================
+function updateBalance() {
+  const total = records.reduce((sum, r) => sum + r.amount, 0);
+  document.getElementById("balance").textContent = `总余额：¥${total.toFixed(2)}`;
+}
+
+// ===============================
+// 预览图片
+// ===============================
+function previewImage() {
+  const file = this.files[0];
+  const preview = document.getElementById("preview");
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+  } else {
+    preview.classList.add("hidden");
+  }
+}
+
+// ===============================
+// 导出 CSV
+// ===============================
+function exportCSV() {
+  if (records.length === 0) {
+    alert("  const fileInput = dialog.querySelector('#imageInput');
   const preview = dialog.querySelector('#preview');
   fileInput.onchange = () => {
     const file = fileInput.files[0];
@@ -146,3 +248,4 @@ function clearAll() {
     updateTotal();
   }
                                }updateList();
+
