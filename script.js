@@ -1,7 +1,3 @@
-// ===============================
-// MoneyBag 记账本脚本
-// ===============================
-
 // 选择元素
 const addBtn = document.getElementById('add-btn');
 const exportBtn = document.getElementById('export-btn');
@@ -149,7 +145,7 @@ function renderRecords() {
       <div class="right">
         <div class="time">${r.time}</div>
       </div>
-      ${r.image ? `< img src="${r.image}" class="preview-img" alt="附图">` : ''}
+      ${r.image ? `<img src="${r.image}" class="preview-img" alt="附图">` : ''}
     `;
     recordList.appendChild(li);
   });
