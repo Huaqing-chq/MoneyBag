@@ -76,44 +76,21 @@ footer button {
   background: #1a3c84;
   color: white;
   font-size: 1em;
-}
-
-#popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.hidden { display: none; }
-
-.popup-box {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 350px;
-  text-align: center;
-}
-
-.popup-box input {
-  width: 90%;
-  margin: 8px 0;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-
+  cursor: pointer;
 }
 
 /* 弹窗与遮罩层 */
+#popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);
-  z-index: 999;
 }
 
 .dialog {
@@ -125,7 +102,6 @@ footer button {
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 1000;
   width: 85%;
   max-width: 350px;
   text-align: center;
@@ -137,6 +113,9 @@ footer button {
   padding: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .dialog .buttons {
@@ -152,9 +131,10 @@ footer button {
   background: #007bff;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
 
-.dialog button#cancelBtn {
+.dialog button#cancel-btn {
   background: #999;
 }
 
@@ -163,9 +143,8 @@ img.receipt {
   margin-top: 6px;
   max-width: 100%;
   border-radius: 6px;
-  }
+}
 
 .hidden {
   display: none;
-  }
-
+}
