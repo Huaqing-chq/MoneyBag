@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 元素选择
   const popup = document.getElementById('popup');
-  const popupBox = popup.querySelector('.popup-box');
   const addBtn = document.getElementById('add-btn');
   const cancelBtn = document.getElementById('cancel-btn');
   const saveBtn = document.getElementById('save-btn');
@@ -36,13 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 点击空白处关闭弹窗
   popup.addEventListener('click', (e) => {
-    if (!popupBox.contains(e.target)) {
+    if (e.target.classList.contains('overlay') || e.target.id === 'popup') {
       popup.classList.add('hidden');
     }
   });
 
   // 保存记录
-  saveBtn.addEventListener('click', () => {
+  saveBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
     const amount = parseFloat(amountInput.value);
     const reason = reasonInput.value.trim();
 
@@ -52,10 +53,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const file = imageInput.files[0];
-    const reader = new FileReader();
+    
+    // 如果没有文件，直接处理
+    if (!file) {
+      const record = {
+        id: Date.now(),
+        amount,
+        reason,
+        image: null,
+        time: new Date().toLocaleString()
+      };
 
+      records.push(record);
+      balance += amount;
+
+      localStorage.setItem('records', JSON.stringify(records));
+      localStorage.setItem('balance', balance);
+
+      renderRecords();
+      popup.classList.add('hidden');
+      return;
+    }
+
+    // 如果有文件，读取文件
+    const reader = new FileReader();
     reader.onloadend = () => {
-      const imageData = file ? reader.result : null;
+      const imageData = reader.result;
       const record = {
         id: Date.now(),
         amount,
@@ -71,11 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('balance', balance);
 
       renderRecords();
-      popup.classList.add('hidden'); // 保存后关闭弹窗
+      popup.classList.add('hidden');
     };
 
-    if (file) reader.readAsDataURL(file);
-    else reader.onloadend();
+    reader.readAsDataURL(file);
   });
 
   // 图片预览，限制尺寸
