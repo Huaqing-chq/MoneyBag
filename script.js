@@ -17,21 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
   let records = JSON.parse(localStorage.getItem('records')) || [];
   let balance = parseFloat(localStorage.getItem('balance')) || 0;
 
-  renderRecords();
+  renderRecords(); // 页面打开不弹窗
 
-  // 显示弹窗
-  addBtn.addEventListener('click', () => popup.classList.remove('hidden'));
-
-  // 点击取消按钮关闭
-  cancelBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    hidePopup();
+  // 点击 "+ 新记录" 显示弹窗，同时清空输入框
+  addBtn.addEventListener('click', () => {
+    popup.classList.remove('hidden');
+    amountInput.value = '';
+    reasonInput.value = '';
+    imageInput.value = '';
+    previewImg.classList.add('hidden');
   });
 
-  // 点击空白区域关闭弹窗
+  // 取消按钮：彻底关闭弹窗
+  cancelBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    popup.classList.add('hidden');
+  });
+
+  // 点击空白处关闭弹窗
   popup.addEventListener('click', (e) => {
     if (!popupBox.contains(e.target)) {
-      hidePopup();
+      popup.classList.add('hidden');
     }
   });
 
@@ -65,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('balance', balance);
 
       renderRecords();
-      hidePopup();
+      popup.classList.add('hidden'); // 保存后关闭弹窗
     };
 
     if (file) reader.readAsDataURL(file);
@@ -96,9 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     let csv = '金额,事由,时间\n';
-    records.forEach(r => {
-      csv += `${r.amount},${r.reason},${r.time}\n`;
-    });
+    records.forEach(r => csv += `${r.amount},${r.reason},${r.time}\n`);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -118,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderRecords() {
     recordList.innerHTML = '';
     balanceDisplay.textContent = `总余额：¥${balance.toFixed(2)}`;
-
     if (records.length === 0) {
       recordList.innerHTML = '<li class="empty">暂无记录</li>';
       return;
@@ -139,14 +142,5 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       recordList.appendChild(li);
     });
-  }
-
-  // 隐藏弹窗并清空
-  function hidePopup() {
-    popup.classList.add('hidden');
-    amountInput.value = '';
-    reasonInput.value = '';
-    imageInput.value = '';
-    previewImg.classList.add('hidden');
   }
 });
