@@ -33,13 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     popup.classList.add('hidden');
   });
 
-  // 点击空白处关闭弹窗
-  popup.addEventListener('click', (e) => {
-    if (e.target.classList.contains('overlay') || e.target.id === 'popup') {
-      popup.classList.add('hidden');
-    }
-  });
-
   // 保存记录
   saveBtn.addEventListener('click', (e) => {
     e.preventDefault();
