@@ -23,14 +23,17 @@
   </footer>
 
   <div id="popup" class="hidden">
-    <div class="popup-box">
+    <div class="overlay"></div>
+    <div class="dialog">
       <h2>添加记录</h2>
       <input id="amount" type="number" placeholder="金额（正收入 / 负支出）">
       <input id="reason" type="text" placeholder="事由">
       <input id="image" type="file" accept="image/*">
       <img id="preview" class="hidden" alt="预览">
-      <button id="save-btn">保存</button>
-      <button id="cancel-btn">取消</button>
+      <div class="buttons">
+        <button id="save-btn">保存</button>
+        <button id="cancel-btn">取消</button>
+      </div>
     </div>
   </div>
 
