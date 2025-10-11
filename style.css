@@ -150,6 +150,8 @@ img.receipt {
 }
 
 
+
+
 /* 页面切换 */
 #home-page, #detail-page {
   width: 100%;
@@ -172,4 +174,100 @@ img.receipt {
 #back-btn {
   background: none;
   border: none;
-  color: #
+  color: #007bff;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.detail-header h2 {
+  margin: 0 auto;
+  transform: translateX(-20px);
+}
+
+/* 详情内容 */
+.detail-content {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.detail-item {
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item label {
+  font-weight: bold;
+  color: #666;
+  display: inline-block;
+  width: 60px;
+}
+
+.detail-item .amount {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.detail-item .amount.positive {
+  color: #4CAF50;
+}
+
+.detail-item .amount.negative {
+  color: #F44336;
+}
+
+#detail-image {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.no-image {
+  color: #999;
+  font-style: italic;
+}
+
+/* 操作按钮 */
+.detail-actions {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.delete-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* 暗黑模式适配 */
+body.dark .detail-header {
+  border-bottom-color: #444;
+}
+
+body.dark .detail-item {
+  border-bottom-color: #444;
+}
+
+body.dark .detail-item label {
+  color: #ccc;
+}
+
+body.dark .no-image {
+  color: #888;
+}
