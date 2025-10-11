@@ -13,7 +13,38 @@
   </header>
 
   <main>
-    <ul id="record-list"></ul>
+    <div id="home-page">
+      <ul id="record-list"></ul>
+    </div>
+    
+    <div id="detail-page" class="hidden">
+      <div class="detail-header">
+        <button id="back-btn">← 返回</button>
+        <h2>记录详情</h2>
+      </div>
+      <div class="detail-content">
+        <div class="detail-item">
+          <label>金额：</label>
+          <span id="detail-amount" class="amount"></span>
+        </div>
+        <div class="detail-item">
+          <label>事由：</label>
+          <span id="detail-reason"></span>
+        </div>
+        <div class="detail-item">
+          <label>时间：</label>
+          <span id="detail-time"></span>
+        </div>
+        <div class="detail-item" id="detail-image-container">
+          <label>图片：</label>
+          <img id="detail-image" class="hidden" alt="记录图片">
+          <span id="detail-no-image" class="no-image">无图片</span>
+        </div>
+        <div class="detail-actions">
+          <button id="delete-btn" class="delete-btn">删除记录</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
