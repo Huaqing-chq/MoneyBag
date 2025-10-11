@@ -148,3 +148,28 @@ img.receipt {
 .hidden {
   display: none;
 }
+
+
+/* 页面切换 */
+#home-page, #detail-page {
+  width: 100%;
+  height: 100%;
+}
+
+#detail-page {
+  padding: 10px;
+}
+
+/* 详情页头部 */
+.detail-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+#back-btn {
+  background: none;
+  border: none;
+  color: #
