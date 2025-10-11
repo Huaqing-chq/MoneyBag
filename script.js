@@ -12,9 +12,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const balanceDisplay = document.getElementById('balance');
   const exportBtn = document.getElementById('export-btn');
   const themeBtn = document.getElementById('theme-btn');
+  
+  // 详情页元素
+  const homePage = document.getElementById('home-page');
+  const detailPage = document.getElementById('detail-page');
+  const backBtn = document.getElementById('back-btn');
+  const detailAmount = document.getElementById('detail-amount');
+  const detailReason = document.getElementById('detail-reason');
+  const detailTime = document.getElementById('detail-time');
+  const detailImage = document.getElementById('detail-image');
+  const detailImageContainer = document.getElementById('detail-image-container');
+  const detailNoImage = document.getElementById('detail-no-image');
+  const deleteBtn = document.getElementById('delete-btn');
 
   let records = JSON.parse(localStorage.getItem('records')) || [];
   let balance = parseFloat(localStorage.getItem('balance')) || 0;
+  let currentDetailId = null;
 
   renderRecords(); // 页面打开不弹窗
 
@@ -133,6 +146,18 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.textContent = document.body.classList.contains('dark') ? '☀️ 主题' : '🌙 主题';
   });
 
+  // 返回按钮
+  backBtn.addEventListener('click', () => {
+    showHomePage();
+  });
+
+  // 删除记录
+  deleteBtn.addEventListener('click', () => {
+    if (currentDetailId && confirm('确定要删除这条记录吗？')) {
+      deleteRecord(currentDetailId);
+    }
+  });
+
   // 渲染记录列表
   function renderRecords() {
     recordList.innerHTML = '';
@@ -144,18 +169,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     records.slice().reverse().forEach(r => {
       const li = document.createElement('li');
-      li.className = 'record-item';
-      li.innerHTML = `
-        <div class="left">
-          <div class="amount">${r.amount > 0 ? '+' : ''}${r.amount}</div>
-          <div class="reason">${r.reason}</div>
-        </div>
-        <div class="right">
-          <div class="time">${r.time}</div>
-        </div>
-        ${r.image ? `<img src="${r.image}" class="preview-img" style="max-width:100px;max-height:100px;" alt="附图">` : ''}
-      `;
-      recordList.appendChild(li);
-    });
-  }
-});
+   
