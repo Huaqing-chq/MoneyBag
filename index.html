@@ -1,73 +1,252 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoneyBag - 记账本</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyBag Pro</title>
+    <style>
+        :root {
+            /* 浅色模式变量 */
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --primary: #6366f1;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* 深色模式变量 */
+                --bg-color: #0f172a;
+                --card-bg: #1e293b;
+                --text-main: #f1f5f9;
+                --text-sub: #94a3b8;
+                --border: #334155;
+            }
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'PingFang SC', system-ui, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 页面切换逻辑 */
+        .view { display: none; padding: 20px; flex: 1; overflow-y: auto; }
+        .view.active { display: block; }
+
+        /* 顶部导航 */
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* 统计卡片 */
+        .balance-card {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 表单样式 */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-sub); }
+        input {
+            width: 100%; padding: 12px; border: 1px solid var(--border);
+            border-radius: 10px; background: var(--bg-color); color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        /* 图片上传预览 */
+        #img-preview {
+            width: 100%; max-height: 150px; object-fit: cover;
+            border-radius: 10px; margin-top: 10px; display: none;
+        }
+
+        /* 列表项样式 */
+        .history-item {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 5px solid #ccc;
+        }
+        .history-item.plus { border-left-color: var(--success); }
+        .history-item.minus { border-left-color: var(--danger); }
+        .history-img {
+            width: 60px; height: 60px; border-radius: 8px; 
+            object-fit: cover; margin-top: 10px; cursor: pointer;
+        }
+
+        /* 底部菜单 */
+        .nav-bar {
+            display: flex;
+            border-top: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+        .nav-item {
+            flex: 1; text-align: center; padding: 15px;
+            cursor: pointer; color: var(--text-sub);
+        }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+
+        .btn {
+            width: 100%; padding: 15px; background: var(--primary);
+            color: white; border: none; border-radius: 12px; cursor: pointer;
+            font-size: 1rem; margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>💰 MoneyBag</h1>
-    <div id="balance">总余额：¥0.00</div>
-  </header>
 
-  <main>
-    <div id="home-page">
-      <ul id="record-list"></ul>
+<div class="phone-container">
+    <div id="view-add" class="view active">
+        <div class="header"><h2>MoneyBag</h2></div>
+        <div class="balance-card">
+            <small>总资产</small>
+            <h1 id="total-balance">￥0.00</h1>
+        </div>
+        
+        <form id="money-form">
+            <div class="form-group">
+                <label>名称</label>
+                <input type="text" id="text" placeholder="去向/来源..." required>
+            </div>
+            <div class="form-group">
+                <label>金额 (正数收入, 负数支出)</label>
+                <input type="number" id="amount" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>订单图片</label>
+                <input type="file" id="file-input" accept="image/*">
+                <img id="img-preview" src="" alt="预览">
+            </div>
+            <button class="btn" type="submit">保存记录</button>
+        </form>
     </div>
-    
-    <div id="detail-page" class="hidden">
-      <div class="detail-header">
-        <button id="back-btn">← 返回</button>
-        <h2>记录详情</h2>
-      </div>
-      <div class="detail-content">
-        <div class="detail-item">
-          <label>金额：</label>
-          <span id="detail-amount" class="amount"></span>
-        </div>
-        <div class="detail-item">
-          <label>事由：</label>
-          <span id="detail-reason"></span>
-        </div>
-        <div class="detail-item">
-          <label>时间：</label>
-          <span id="detail-time"></span>
-        </div>
-        <div class="detail-item" id="detail-image-container">
-          <label>图片：</label>
-          <img id="detail-image" class="hidden" alt="记录图片">
-          <span id="detail-no-image" class="no-image">无图片</span>
-        </div>
-        <div class="detail-actions">
-          <button id="delete-btn" class="delete-btn">删除记录</button>
-        </div>
-      </div>
+
+    <div id="view-history" class="view">
+        <div class="header"><h2>历史明细</h2></div>
+        <div id="history-list"></div>
     </div>
-  </main>
 
-  <footer>
-    <button id="add-btn">＋ 新记录</button>
-    <button id="export-btn">导出表格</button>
-    <button id="theme-btn">🌙 主题</button>
-  </footer>
-
-  <div id="popup" class="hidden">
-    <div class="overlay"></div>
-    <div class="dialog">
-      <h2>添加记录</h2>
-      <input id="amount" type="number" placeholder="金额（正收入 / 负支出）">
-      <input id="reason" type="text" placeholder="事由">
-      <input id="image" type="file" accept="image/*">
-      <img id="preview" class="hidden" alt="预览">
-      <div class="buttons">
-        <button id="save-btn">保存</button>
-        <button id="cancel-btn">取消</button>
-      </div>
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchView('add')">➕ 记账</div>
+        <div class="nav-item" onclick="switchView('history')">📜 历史</div>
     </div>
-  </div>
+</div>
 
-  <script src="script.js"></script>
+<script>
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    let currentBase64 = "";
+
+    // 视图切换
+    function switchView(viewName) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        if(viewName === 'add') {
+            document.getElementById('view-add').classList.add('active');
+            document.querySelectorAll('.nav-item')[0].classList.add('active');
+        } else {
+            document.getElementById('view-history').classList.add('active');
+            document.querySelectorAll('.nav-item')[1].classList.add('active');
+            renderHistory();
+        }
+    }
+
+    // 图片处理
+    document.getElementById('file-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            currentBase64 = reader.result;
+            const preview = document.getElementById('img-preview');
+            preview.src = currentBase64;
+            preview.style.display = 'block';
+        };
+        if (file) reader.readAsDataURL(file);
+    });
+
+    // 保存记录
+    document.getElementById('money-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newTransaction = {
+            id: Date.now(),
+            text: document.getElementById('text').value,
+            amount: +document.getElementById('amount').value,
+            image: currentBase64,
+            date: new Date().toLocaleString()
+        };
+
+        transactions.push(newTransaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        
+        // 重置表单
+        e.target.reset();
+        currentBase64 = "";
+        document.getElementById('img-preview').style.display = 'none';
+        updateBalance();
+        alert("保存成功！");
+    });
+
+    // 渲染历史
+    function renderHistory() {
+        const container = document.getElementById('history-list');
+        container.innerHTML = transactions.length === 0 ? '<p style="text-align:center;color:gray">暂无数据</p>' : '';
+        
+        transactions.slice().reverse().forEach(t => {
+            const div = document.createElement('div');
+            div.className = `history-item ${t.amount >= 0 ? 'plus' : 'minus'}`;
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <strong>${t.text}</strong>
+                    <span style="font-weight:bold">${t.amount >= 0 ? '+' : ''}${t.amount}</span>
+                </div>
+                <div style="font-size:0.8rem; color:gray; margin-top:5px">${t.date}</div>
+                ${t.image ? `<img src="${t.image}" class="history-img" onclick="window.open(this.src)">` : ''}
+                <div style="text-align:right">
+                    <button onclick="deleteItem(${t.id})" style="color:var(--danger); background:none; border:none; cursor:pointer">删除</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function deleteItem(id) {
+        transactions = transactions.filter(t => t.id !== id);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        renderHistory();
+        updateBalance();
+    }
+
+    function updateBalance() {
+        const total = transactions.reduce((acc, t) => acc + t.amount, 0).toFixed(2);
+        document.getElementById('total-balance').innerText = `￥${total}`;
+    }
+
+    updateBalance();
+</script>
 </body>
 </html>
